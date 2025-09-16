@@ -9,7 +9,6 @@ import { CanSealReq, HadSealReq, ManualHadBuyReq } from '../types/fund';
 import { getFundInfo } from '../constants/buy-fund-list';
 import HadBuyFundDotModel from '../model/had-buy-fund-dot';
 import BuyMsgRecordModel, { BuyMsgRecord } from '../model/buy-msg-record';
-import { getLocalIPs } from 'src/utils/get-local-ip';
 import { Request } from 'express';
 
 @Controller()
@@ -109,6 +108,7 @@ export default class FundController {
       params.recordId,
       params.fundCode,
     );
+    console.log('已卖出');
     return msg;
   }
 

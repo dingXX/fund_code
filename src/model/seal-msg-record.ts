@@ -20,6 +20,7 @@ const SealMsgRecordSchema: Schema = new Schema(
         sealCountRate: String,
         changeRate: Number,
         buyTime: String,
+        fundCode: String,
         needSealIds: [String],
       },
     ],
