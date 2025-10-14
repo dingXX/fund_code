@@ -1,3 +1,4 @@
+import { Dayjs } from 'dayjs';
 import { FundItem } from '../types/fund';
 
 // 螺丝钉的星级接口
@@ -11,6 +12,7 @@ export const buyFundList: Array<FundItem> = [
     alipaysProductId: '20220124000230030000000000089935',
     defaultChangeRate: 0.2,
     preFundPriceImg: 'https://j4.dfcfw.com/charts/pic6/013308.png',
+    buyType: 'manual',
   },
   {
     name: '南方中正全指证券ETF',
@@ -20,6 +22,7 @@ export const buyFundList: Array<FundItem> = [
     defaultChangeRate: 0.2,
     preFundPriceImg: 'https://j4.dfcfw.com/charts/pic6/004069.png',
     screwFundId: '004069',
+    buyType: 'manual',
   },
   {
     name: '易方达消费行业股票',
@@ -31,20 +34,40 @@ export const buyFundList: Array<FundItem> = [
     preFundPriceImg:
       'https://image.sinajs.cn/newchart/v5/fundpre/min_s/110022.gif',
     screwFundId: '501090',
+    buyType: 'manual',
   },
   {
     name: '广发纳斯达克100ETF',
     fundCode: '006479',
-    buyBasePrice: 400,
+    buyBasePrice: 100,
     alipaysProductId: '20181024000230030000000000015431',
     screwFundId: '040046',
+    buyType: 'timing',
+    isTimingBuyTime: (buyTime: Dayjs) => {
+      return [1, 2, 3, 4, 5].includes(buyTime.get('day'));
+    },
   },
   {
     name: '天弘标普500',
     fundCode: '007722',
-    buyBasePrice: 400,
+    buyBasePrice: 100,
     alipaysProductId: '20190912000230030000000000029639',
     screwFundId: '050025',
+    buyType: 'timing',
+    isTimingBuyTime: (buyTime: Dayjs) => {
+      return [1, 2, 3, 4, 5].includes(buyTime.get('day'));
+    },
+  },
+  {
+    name: '广发纳斯达克100ETF',
+    fundCode: '007360',
+    buyBasePrice: 100,
+    alipaysProductId: '20190513000230030000000000027917',
+    // screwFundId: '040046',
+    buyType: 'timing',
+    isTimingBuyTime: (buyTime: Dayjs) => {
+      return [1, 2, 3, 4, 5].includes(buyTime.get('day'));
+    },
   },
 ];
 

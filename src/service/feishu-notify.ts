@@ -138,6 +138,7 @@ export default class FeiShuNotifyService {
         fundCode: item.fundCode,
         buyDate: item.nowDate,
         buyPrice: Math.floor(item.needBuyPrice),
+        buyType: item.buyType || 'manual',
       };
     });
     const recordItem = await BuyMsgRecordModel.create({
@@ -335,7 +336,8 @@ export default class FeiShuNotifyService {
         },
       },
     };
-    return this.sendMessage(msg);
+    const feishu = await this.sendMessage(msg);
+    return { feishu, recordId };
   }
   public async sendHadManualSetDealMessage(
     dealDotList: (HadBuyItem | boolean)[],

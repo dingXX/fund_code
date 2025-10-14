@@ -1,4 +1,5 @@
 import { IsString, IsOptional } from 'class-validator';
+import { Dayjs } from 'dayjs';
 
 export type BuyFund = {
   name?: string;
@@ -35,6 +36,14 @@ export type FundItem = {
    * 螺丝钉星级的outside_fund
    */
   screwFundId?: string;
+  /**
+   * 买入类型，手动|定时
+   */
+  buyType?: 'timing' | 'manual';
+  /**
+   * 定时买入时间，格式：HH:mm
+   */
+  isTimingBuyTime?: (day: Dayjs) => boolean | Promise<boolean>;
 };
 export type FundDotItem = {
   date: string;
@@ -69,6 +78,7 @@ export type hadBuyParams = {
   buyDate: string;
 
   buyPrice: number;
+  buyType?: string;
 };
 export type HadBuyItem = hadBuyParams & {
   buyCount: number;
@@ -106,9 +116,9 @@ export type ScrewData = {
   /**
    * 对应估值表
    */
-  statusMap: Record<string,ScrewStatus>;
+  statusMap: Record<string, ScrewStatus>;
   /**
    * 今日星级
    */
   grade: string;
-}
+};

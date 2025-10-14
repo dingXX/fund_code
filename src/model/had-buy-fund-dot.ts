@@ -20,6 +20,7 @@ const HadBugFundDotSchema: Schema = new Schema(
     buyCount: Number,
     fundPrice: Number,
     sealedAt: Date,
+    buyType: String,
     createdAt: { type: Date, default: Date.now() },
     updatedAt: { type: Date, default: Date.now() },
   },

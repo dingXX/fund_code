@@ -19,6 +19,10 @@ async function main() {
 
   await fetch(`http://${localIp}:3000/seal/send-msg`);
   console.log('请求卖定时任务成功');
+
+  await fetch(`http://${localIp}:3000/buy-timing-fund-msg`);
+  console.log('请求买定时任务成功');
+
   await sleep(10000);
 
   process.exit();

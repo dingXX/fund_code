@@ -18,6 +18,7 @@ const BuyMsgRecordSchema: Schema = new Schema(
           fundCode: String,
           buyDate: String,
           buyPrice: Number,
+          buyType: { type: String, required: false },
         },
       ],
       required: true,

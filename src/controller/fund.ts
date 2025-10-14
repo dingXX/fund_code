@@ -28,6 +28,13 @@ export default class FundController {
     );
     return result;
   }
+  @Get('/buy-timing-fund-msg')
+  public async getTimingBuyFundListMsg(@Req() req: Request) {
+    const result = await this.timerHandlerService.sendTimingBuyFundMsgMsg(
+      req.headers.host,
+    );
+    return result;
+  }
   @Get('/buy-fund')
   public async getBuyFundList() {
     const buyList = await this.fundService.getBuyFundList();
@@ -46,35 +53,10 @@ export default class FundController {
   @Get('/manual-set-had-buy')
   public async manualSetHadBuy(@Query() hadBuyParams: ManualHadBuyReq) {
     const { recordId } = hadBuyParams;
-    const record = await BuyMsgRecordModel.findById(recordId);
-    if (!record || record.hadBuy) {
-      this.fundService.setDbHadBuyCount();
-      return {
-        code: -1,
-        msg: '已处理过「已买入配置」，无需重复处理',
-        record,
-      };
-    }
-    const hadDealInfo = await Promise.all(
-      record.toObject().needBuyList.map(async (item) => {
-        const buyDate = hadBuyParams?.buyDate || item.buyDate;
-
-        return await this.fundService.setHadBuy({
-          ...item,
-          buyDate,
-        });
-      }),
-    );
-    record.hadBuy = true;
-    await record.save();
-    const msg = await this.feishuNofityService.sendHadManualSetDealMessage(
-      hadDealInfo,
+    return this.timerHandlerService.setHadBuyRecordById(
       recordId,
+      hadBuyParams?.buyDate,
     );
-    return {
-      hadDealInfo,
-      msg,
-    };
   }
 
   @Get('/had-buy/auto-set-buy-count')

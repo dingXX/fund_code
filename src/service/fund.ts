@@ -17,6 +17,7 @@ import HadBuyFundDotModel from '../model/had-buy-fund-dot';
 import { get, pick } from 'lodash';
 import { getRateStr } from '../utils/get-rate-str';
 import SealMsgRecordModel from '../model/seal-msg-record';
+import { checkIsDealDay } from 'src/utils/get-holiday-info';
 
 @Injectable()
 export default class FundService {
@@ -132,6 +133,7 @@ export default class FundService {
     fundCode: string,
     buyBasePrice: number = 200,
     buyTime?: string,
+    fixedBuyPrice?: boolean,
   ): Promise<BuyFund> {
     let nowDate = getFormatDate(buyTime);
     console.log('nowDate', nowDate);
@@ -177,30 +179,44 @@ export default class FundService {
       lastWeekDatePrice: lastWeekDatePrice!,
       baseNeedBuyPrice: needBuyPrice,
       nowPriceCountRate: getRateStr(lteNowPriceDotCount, allDotCount),
-      needBuyPrice: Math.max(
-        allDotCount && lteNowPriceDotCount / allDotCount > 0.5
-          ? Math.min(needBuyPrice, buyBasePrice)
-          : Math.max(needBuyPrice, buyBasePrice),
-        buyBasePrice * 0.4,
-      ),
+      needBuyPrice: fixedBuyPrice
+        ? buyBasePrice
+        : Math.max(
+            allDotCount && lteNowPriceDotCount / allDotCount > 0.5
+              ? Math.min(needBuyPrice, buyBasePrice)
+              : Math.max(needBuyPrice, buyBasePrice),
+            buyBasePrice * 0.4,
+          ),
     };
   }
 
   public async getBuyFundList(
     buyTime?: string,
+    buyType?:
+      | FundItem['buyType']
+      | ((item: FundItem, buyTime?: string) => boolean),
   ): Promise<Array<BuyFund & FundItem>> {
+    const isDealDay = await checkIsDealDay(dayjs(buyTime));
     const buyList = await Promise.all(
-      buyFundList.map(async (item) => {
-        const data = await this.getWeekPriceChange(
-          item.fundCode,
-          item.buyBasePrice,
-          buyTime,
-        );
-        return {
-          ...data,
-          ...item,
-        };
-      }),
+      buyFundList
+        .filter((item) =>
+          typeof buyType === 'function'
+            ? buyType(item, buyTime)
+            : item.buyType === (buyType || 'manual'),
+        )
+        .filter((item) => item.buyType !== 'timing' || isDealDay)
+        .map(async (item) => {
+          const data = await this.getWeekPriceChange(
+            item.fundCode,
+            item.buyBasePrice,
+            buyTime,
+            item.buyType === 'timing',
+          );
+          return {
+            ...data,
+            ...item,
+          };
+        }),
     );
     return buyList;
   }
@@ -294,7 +310,7 @@ export default class FundService {
    * 設置為已購買
    */
   public async setHadBuy(params: hadBuyParams) {
-    const { fundCode, buyDate, buyPrice } = params;
+    const { fundCode, buyDate, buyPrice, buyType } = params;
     console.log('params', {
       fundCode,
       buyDate,
@@ -314,6 +330,7 @@ export default class FundService {
         fundCode,
         buyDate,
         buyPrice,
+        buyType,
       });
       this.logger.log('不存在已有的买入数据 - 创建数据');
     }
