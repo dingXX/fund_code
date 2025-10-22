@@ -59,7 +59,7 @@ export const buyFundList: Array<FundItem> = [
     },
   },
   {
-    name: '广发纳斯达克100ETF',
+    name: '易方达美元债',
     fundCode: '007360',
     buyBasePrice: 100,
     alipaysProductId: '20190513000230030000000000027917',
