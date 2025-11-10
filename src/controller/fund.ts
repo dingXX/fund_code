@@ -96,13 +96,44 @@ export default class FundController {
 
   @Get('/dev/handler')
   public async devHandler() {
-    const test = await this.fundService.getScrewFundStartList();
+    const dateList = [
+      '2025-10-20',
+      '2025-11-10',
+      '2025-11-07',
+      '2025-11-05',
+      '2025-11-04',
+      '2025-11-03',
+      '2025-10-31',
+      '2025-10-28',
+      '2025-10-27',
+      '2025-10-24',
+      '2025-10-21',
+      '2025-10-20',
+      '2025-10-17',
+    ];
 
-    const item = await HadBuyFundDotModel.find({
-      // sealedAt:{
-      //   $exists:true
-      // }
+    // const test = await this.fundService.getFundCodeIncome('006479');
+    const test = await HadBuyFundDotModel.find({
+      fundCode: '006479',
+      // buyDate: {
+      //   $in: dateList,
+      // },
     });
+    // await HadBuyFundDotModel.deleteMany({
+
+    // })
+    // test.forEach((item) => {
+    //   if (dateList.includes(item.buyDate)) {
+    //     console.log('match', item.buyDate);
+    //     item.delete();
+
+    //   }
+    // });
+    // const item = await HadBuyFundDotModel.find({
+    //   // sealedAt:{
+    //   //   $exists:true
+    //   // }
+    // });
     //  for (const inValidDate of inValidList) {
     //     await HadBuyFundDotModel.deleteMany({
     //       buyDate: inValidDate._id
@@ -110,7 +141,7 @@ export default class FundController {
     //  }
     return {
       test,
-      item,
+      // item,
     };
   }
 }

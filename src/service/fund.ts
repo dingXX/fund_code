@@ -14,7 +14,7 @@ import {
 } from '../types/fund';
 import { getFormatDate, getFundDealDot } from '../utils/deal-date';
 import HadBuyFundDotModel from '../model/had-buy-fund-dot';
-import { get, pick } from 'lodash';
+import { get, pick, uniq } from 'lodash';
 import { getRateStr } from '../utils/get-rate-str';
 import SealMsgRecordModel from '../model/seal-msg-record';
 import { checkIsDealDay } from 'src/utils/get-holiday-info';
@@ -220,6 +220,12 @@ export default class FundService {
     );
     return buyList;
   }
+  /**
+   * 获取buyDate 到当前时间的所有基金价格
+   * @param fundCode
+   * @param buyDate
+   * @returns
+   */
   private async getAllFundList(fundCode: string, buyDate: string) {
     let fundList: FundDotItem[] = [];
     let hasAllGet = false;
@@ -527,5 +533,79 @@ export default class FundService {
     });
     await HadBuyFundDotModel.bulkSave(canSealDot);
     return canSealDot;
+  }
+
+  /**
+   * 计算收益信息
+   */
+  public async getFundCodeIncome(fundCode: string) {
+    const buyList = await HadBuyFundDotModel.find({
+      buyCount: {
+        $exists: true,
+      },
+      fundCode,
+    });
+    let buyPrice = 0;
+    let sealPrice = 0;
+    let sealBuyPrice = 0;
+    let unSealBuyPrice = 0;
+
+    let unSealCount = 0;
+    /**
+     * 卖出的收益
+     */
+    let sealIncome = 0;
+    let unSealIncome = 0;
+    let sealedDateList = uniq(
+      buyList
+        .filter((item) => item.sealedAt)
+        .map((item) => dayjs(item.sealedAt).format('YYYY-MM-DD')),
+    );
+    const datePriceMap = {};
+    let lastFundDot: FundDotItem;
+    if (sealedDateList.length) {
+      sealedDateList = sealedDateList.sort((a, b) =>
+        dayjs(a).isAfter(dayjs(b)) ? 1 : -1,
+      );
+      const fundList = await this.getAllFundList(fundCode, sealedDateList[0]);
+      lastFundDot = fundList[0];
+      fundList.forEach((item) => {
+        datePriceMap[item.date] = item.price;
+      });
+    }
+    buyList.forEach((item) => {
+      if (item.sealedAt) {
+        const sealedDate = dayjs(item.sealedAt).format('YYYY-MM-DD');
+        // TODO: 拉卖时价格
+        sealPrice += item.buyCount! * datePriceMap[sealedDate];
+        sealIncome +=
+          item.buyCount! * (datePriceMap[sealedDate] - item.fundPrice!);
+        sealBuyPrice += Number(item.buyCount) * Number(item.fundPrice)!;
+      } else {
+        unSealCount += item.buyCount!;
+        unSealBuyPrice += Number(item.buyCount) * Number(item.fundPrice)!;
+      }
+      buyPrice += Number(item.buyCount) * Number(item.fundPrice)!;
+      unSealIncome +=
+        Number(item.buyCount) * (lastFundDot.price! - item.fundPrice!);
+    });
+    return {
+      fundCode,
+      //
+      buyPrice,
+      sealPrice,
+      unSealCount,
+      // 已卖出的收益
+      sealIncome,
+      // 未卖出的收益
+      unSealIncome,
+      // 卖出点的买入总额
+      sealBuyPrice,
+      unSealBuyPrice,
+      // @ts-expect-error
+      unSealPrice: unSealCount * lastFundDot.price!,
+
+      ...getFundInfo(fundCode),
+    };
   }
 }

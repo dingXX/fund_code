@@ -39,7 +39,7 @@ export const buyFundList: Array<FundItem> = [
   {
     name: '广发纳斯达克100ETF',
     fundCode: '006479',
-    buyBasePrice: 100,
+    buyBasePrice: 10,
     alipaysProductId: '20181024000230030000000000015431',
     screwFundId: '040046',
     buyType: 'timing',
@@ -50,7 +50,7 @@ export const buyFundList: Array<FundItem> = [
   {
     name: '天弘标普500',
     fundCode: '007722',
-    buyBasePrice: 100,
+    buyBasePrice: 50,
     alipaysProductId: '20190912000230030000000000029639',
     screwFundId: '050025',
     buyType: 'timing',
