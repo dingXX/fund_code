@@ -69,6 +69,28 @@ export const buyFundList: Array<FundItem> = [
       return [1, 2, 3, 4, 5].includes(buyTime.get('day'));
     },
   },
+  // 每天50
+  {
+    name: '黄金ETF',
+    fundCode: '002963',
+    buyBasePrice: 50,
+    alipaysProductId: '20160722000230030000000000009072',
+    buyType: 'timing',
+    isTimingBuyTime: (buyTime: Dayjs) => {
+      return [1, 2, 3, 4, 5].includes(buyTime.get('day'));
+    },
+  },
+  // 每周周二 400
+  {
+    name: '黄金ETF',
+    fundCode: '002963',
+    buyBasePrice: 400,
+    alipaysProductId: '20160722000230030000000000009072',
+    buyType: 'timing',
+    isTimingBuyTime: (buyTime: Dayjs) => {
+      return [2].includes(buyTime.get('day'));
+    },
+  },
 ];
 
 export const getFundInfo = (fundCode: string) => {
