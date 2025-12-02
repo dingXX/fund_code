@@ -44,7 +44,8 @@ export const buyFundList: Array<FundItem> = [
     screwFundId: '040046',
     buyType: 'timing',
     isTimingBuyTime: (buyTime: Dayjs) => {
-      return [1, 2, 3, 4, 5].includes(buyTime.get('day'));
+      return false;
+      // return [1, 2, 3, 4, 5].includes(buyTime.get('day'));
     },
   },
   {
@@ -55,6 +56,8 @@ export const buyFundList: Array<FundItem> = [
     screwFundId: '050025',
     buyType: 'timing',
     isTimingBuyTime: (buyTime: Dayjs) => {
+      return false;
+
       return [1, 2, 3, 4, 5].includes(buyTime.get('day'));
     },
   },

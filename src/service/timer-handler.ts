@@ -42,15 +42,17 @@ export default class TimerHandlerService {
       },
     );
     const screwData = await this.fundService.getScrewFundStartList();
-    const feishu = await this.feishuNofityService.sendBuyMessage(
-      buyList,
-      host || this.defaultHost,
-      screwData,
-    );
+    const recordId = await this.feishuNofityService.setNeedBuyRecord(buyList);
+
+    // const feishu = await this.feishuNofityService.sendBuyMessage(
+    //   buyList,
+    //   host || this.defaultHost,
+    //   screwData,
+    // );
     setTimeout(() => {
-      return this.setHadBuyRecordById(feishu.recordId);
+      return this.setHadBuyRecordById(recordId);
     }, 1000);
-    return feishu;
+    // return feishu;
   }
 
   public async sendSealFundMsg(host?: string) {
