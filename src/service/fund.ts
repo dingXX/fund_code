@@ -68,7 +68,6 @@ export default class FundService {
       ...query,
       callback: 'test',
     });
-    console.log('queryStr', queryStr);
     const resp = await fetch(`${url}?${queryStr}`, {
       method: 'GET',
       headers: {
@@ -103,7 +102,6 @@ export default class FundService {
       pageSize?: number;
     } = {},
   ) {
-    console.log('getFundData', fundCode);
     const resp = await this.fetch<{
       Data: { LSJZList: Array<{ FSRQ: string; DWJZ: string }> };
       TotalCount: number;
