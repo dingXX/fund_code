@@ -106,7 +106,7 @@ export default class FundService {
       Data: { LSJZList: Array<{ FSRQ: string; DWJZ: string }> };
       TotalCount: number;
       PageSize: number;
-      PageIndex: Number;
+      PageIndex: number;
     }>('https://api.fund.eastmoney.com/f10/lsjz', {
       pageIndex: 1,
       pageSize: 20,
@@ -133,7 +133,7 @@ export default class FundService {
     buyTime?: string,
     fixedBuyPrice?: boolean,
   ): Promise<BuyFund> {
-    let nowDate = getFormatDate(buyTime);
+    const nowDate = getFormatDate(buyTime);
     console.log('nowDate', nowDate);
 
     const list = await this.getAllFundList(fundCode, nowDate);
@@ -146,14 +146,14 @@ export default class FundService {
     const lastWeekDate = dayjs(nowDate)
       .subtract(hasNowDate ? 7 : 8, 'day')
       .format('YYYY-MM-DD');
-    let lastWeekDatePrice = getFundDealDot(lastWeekDate, list);
+    const lastWeekDatePrice = getFundDealDot(lastWeekDate, list);
     this.logger.log('nowDatePrice', {
       fundCode,
       nowDatePrice,
       lastWeekDatePrice,
     });
     const priceChange =
-      ((nowDatePrice!.price - lastWeekDatePrice!.price) /
+      ((nowDatePrice.price - lastWeekDatePrice!.price) /
         lastWeekDatePrice!.price) *
       100;
     const needBuyPrice = buyBasePrice - buyBasePrice * priceChange * 0.1;
@@ -172,7 +172,7 @@ export default class FundService {
       fundCode,
       nowDate,
       lastWeekDate,
-      nowDatePrice: nowDatePrice!,
+      nowDatePrice: nowDatePrice,
       priceChange,
       lastWeekDatePrice: lastWeekDatePrice!,
       baseNeedBuyPrice: needBuyPrice,
@@ -225,7 +225,7 @@ export default class FundService {
    * @returns
    */
   private async getAllFundList(fundCode: string, buyDate: string) {
-    let fundList: FundDotItem[] = [];
+    const fundList: FundDotItem[] = [];
     let hasAllGet = false;
 
     let pageIndex = 1;
@@ -249,14 +249,14 @@ export default class FundService {
    * 获取历史的购买记录
    */
   public async getHistoryBuyInfo(fundCode: string, firstBuyDate: string) {
-    let hadBuyList: HadBuyItem[] = [];
+    const hadBuyList: HadBuyItem[] = [];
     let fundList: FundDotItem[] = await this.getAllFundList(
       fundCode,
       firstBuyDate,
     );
 
-    let buyDay = 2;
-    let nowDay = dayjs().day();
+    const buyDay = 2;
+    const nowDay = dayjs().day();
     let lastExpectedDate = dayjs().subtract(
       nowDay < buyDay ? 7 - nowDay + buyDay : nowDay - buyDay,
       'day',
@@ -322,13 +322,16 @@ export default class FundService {
       params,
     });
 
-    let fundList: FundDotItem[] = await this.getAllFundList(fundCode, buyDate);
+    const fundList: FundDotItem[] = await this.getAllFundList(
+      fundCode,
+      buyDate,
+    );
     const dealDot = getFundDealDot(buyDate, fundList, false);
     let hadBuyDot = await HadBuyFundDotModel.findOne({
       fundCode,
       buyDate,
     });
-    let isHadBuyDot = !!hadBuyDot;
+    const isHadBuyDot = !!hadBuyDot;
     if (!hadBuyDot) {
       hadBuyDot = await HadBuyFundDotModel.create({
         fundCode,
@@ -437,7 +440,7 @@ export default class FundService {
       (count, item) => {
         return {
           // 卖出的价格
-          sealPrice: count.sealPrice + item.buyCount! * sealDealDot.price!,
+          sealPrice: count.sealPrice + item.buyCount! * sealDealDot.price,
           // 实际买入的份额
           buyCount: count.buyCount + item.buyCount!,
           // 实际买入的价格
@@ -578,14 +581,14 @@ export default class FundService {
         sealPrice += item.buyCount! * datePriceMap[sealedDate];
         sealIncome +=
           item.buyCount! * (datePriceMap[sealedDate] - item.fundPrice!);
-        sealBuyPrice += Number(item.buyCount) * Number(item.fundPrice)!;
+        sealBuyPrice += Number(item.buyCount) * Number(item.fundPrice);
       } else {
         unSealCount += item.buyCount!;
-        unSealBuyPrice += Number(item.buyCount) * Number(item.fundPrice)!;
+        unSealBuyPrice += Number(item.buyCount) * Number(item.fundPrice);
       }
-      buyPrice += Number(item.buyCount) * Number(item.fundPrice)!;
+      buyPrice += Number(item.buyCount) * Number(item.fundPrice);
       unSealIncome +=
-        Number(item.buyCount) * (lastFundDot.price! - item.fundPrice!);
+        Number(item.buyCount) * (lastFundDot.price - item.fundPrice!);
     });
     return {
       fundCode,
@@ -601,7 +604,7 @@ export default class FundService {
       sealBuyPrice,
       unSealBuyPrice,
       // @ts-expect-error
-      unSealPrice: unSealCount * lastFundDot.price!,
+      unSealPrice: unSealCount * lastFundDot.price,
 
       ...getFundInfo(fundCode),
     };

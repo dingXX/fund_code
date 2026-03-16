@@ -21,7 +21,7 @@ export function getFundDealDot(
 ) {
   const expDate = getFormatDate(expectedDate);
 
-  let actualFundDot = fundList.find((item, idx) => {
+  const actualFundDot = fundList.find((item, idx) => {
     if (item.date === expDate) {
       return true;
     }

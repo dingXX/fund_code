@@ -4,7 +4,7 @@ import { ScrewStatus } from '../types/fund';
  * 基于螺丝钉的估值情况，展示md格式的信息
  */
 export function getMdFromSrewStatus(status?: ScrewStatus) {
-  console.log('getMdFromSrewStatus',status)
+  console.log('getMdFromSrewStatus', status);
   if (!status) {
     return '';
   }

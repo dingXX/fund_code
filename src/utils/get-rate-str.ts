@@ -1,4 +1,8 @@
-export function getRateStr(numerator: number | string, denominator: number | string, toFixedLen: number = 0) {
+export function getRateStr(
+  numerator: number | string,
+  denominator: number | string,
+  toFixedLen: number = 0,
+) {
   if (isNaN(Number(numerator)) || isNaN(Number(denominator))) {
     return '--%';
   }

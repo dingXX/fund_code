@@ -12,7 +12,6 @@ export const getLocalIPs = () => {
         }
       }
     }
-
   }
   return '127.0.01.1';
 };

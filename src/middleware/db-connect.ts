@@ -8,7 +8,7 @@ const {
   MONGO_DB,
   MONGO_USER,
   MONGO_PASSWORD,
-  MONGO_AUTH_SOURCE  = 'admin',
+  MONGO_AUTH_SOURCE = 'admin',
   MONGO_AUTH_MECHANISM,
   MONGO_SRV,
 } = process.env;
@@ -27,7 +27,8 @@ if (!mongoUri) {
       : '';
   mongoUri = `${proto}://${auth}${host}${MONGO_SRV === 'true' ? '' : `:${port}`}/${db}`;
   const params: string[] = [];
-  if (MONGO_AUTH_SOURCE) params.push(`authSource=${encodeURIComponent(MONGO_AUTH_SOURCE)}`);
+  if (MONGO_AUTH_SOURCE)
+    params.push(`authSource=${encodeURIComponent(MONGO_AUTH_SOURCE)}`);
   if (MONGO_AUTH_MECHANISM)
     params.push(`authMechanism=${encodeURIComponent(MONGO_AUTH_MECHANISM)}`);
   if (params.length) mongoUri += `?${params.join('&')}`;

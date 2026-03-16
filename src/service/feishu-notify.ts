@@ -356,7 +356,7 @@ export default class FeiShuNotifyService {
     };
     this.sendMessage(msg);
   }
-  public async sendMessage(msg: Object) {
+  public async sendMessage(msg: object) {
     const res = await axios(
       'https://open.larkoffice.com/open-apis/bot/v2/hook/19db6dcf-f753-4348-9c0a-a0c32fcc1b49',
       {

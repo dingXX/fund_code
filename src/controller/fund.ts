@@ -21,17 +21,26 @@ export default class FundController {
 
   private readonly logger = new Logger(FundController.name);
 
+  private getOrigin(req: Request) {
+    const envOrigin = process.env.APP_ORIGIN;
+    if (typeof envOrigin === 'string' && envOrigin.trim()) {
+      return envOrigin.replace(/\/+$/, '');
+    }
+
+    return req.headers.host
+  }
+
   @Get('/buy-fund-msg')
   public async getBuyFundListMsg(@Req() req: Request) {
     const result = await this.timerHandlerService.sendBuyFundMsg(
-      req.headers.host,
+      this.getOrigin(req),
     );
     return result;
   }
   @Get('/buy-timing-fund-msg')
   public async getTimingBuyFundListMsg(@Req() req: Request) {
     const result = await this.timerHandlerService.sendTimingBuyFundMsgMsg(
-      req.headers.host,
+      this.getOrigin(req),
     );
     return result;
   }
@@ -82,7 +91,7 @@ export default class FundController {
 
   @Get('/seal/send-msg')
   public async getSealMsg(@Req() req: Request) {
-    return this.timerHandlerService.sendSealFundMsg(req.headers.host || '');
+    return this.timerHandlerService.sendSealFundMsg(this.getOrigin(req));
   }
   @Get('/seal/set-had-seal')
   public async setHadSeal(@Query() params: HadSealReq) {

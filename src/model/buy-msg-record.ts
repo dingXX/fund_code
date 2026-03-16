@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/naming-convention */
 import mongoose, { Document, Schema } from 'mongoose';
 import { hadBuyParams as HadBuyParams } from '../types/fund';
 

@@ -6,9 +6,9 @@ import { Request } from 'express';
 export class AppController {
   constructor(private readonly appService: AppService) {}
 
+
   @Get()
   async getHello(@Req() req: Request) {
-    console.log('req', req.headers.host);
     return await this.appService.getHello();
   }
 }
