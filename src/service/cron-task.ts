@@ -63,7 +63,7 @@ export default class CronTaskService {
   //   });
   // }
 
-  @Cron('0 0 10 * * *', {
+  @Cron('0 30 14 * * *', {
     name: 'cron:seal',
     timeZone: TIME_ZONE,
     disabled: process.env.NODE_ENV?.toLowerCase() !== 'production',
