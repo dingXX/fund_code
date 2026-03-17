@@ -27,7 +27,7 @@ export default class FundController {
       return envOrigin.replace(/\/+$/, '');
     }
 
-    return req.headers.host
+    return req.headers.host;
   }
 
   @Get('/buy-fund-msg')
