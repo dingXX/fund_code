@@ -39,13 +39,14 @@ export default class CronTaskService {
     return `http://${ip}:${port}`;
   }
 
-  @Cron('0 0 10 * * 2', {
+  @Cron('0 30 10 * * 2', {
     name: 'cron:buy',
     timeZone: TIME_ZONE,
     disabled: process.env.NODE_ENV?.toLowerCase() !== 'production',
   })
   async handleBuy() {
     await this.runOnce('buy', async () => {
+      console.log('handleBuy');
       const origin = this.getOriginFromEnv();
       await this.timerHandlerService.sendBuyFundMsg(origin);
     });
@@ -63,7 +64,7 @@ export default class CronTaskService {
   //   });
   // }
 
-  @Cron('0 30 14 * * *', {
+  @Cron('0 28 14 * * *', {
     name: 'cron:seal',
     timeZone: TIME_ZONE,
     disabled: process.env.NODE_ENV?.toLowerCase() !== 'production',
@@ -71,6 +72,8 @@ export default class CronTaskService {
   async handleSeal() {
     await this.runOnce('seal', async () => {
       const origin = this.getOriginFromEnv();
+      console.log('handleSeal', origin);
+
       await this.timerHandlerService.sendSealFundMsg(origin);
     });
   }

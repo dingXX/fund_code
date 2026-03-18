@@ -7,9 +7,15 @@ dotenv.config();
 async function bootstrap() {
   const { AppModule } = await import('./app.module');
   const { getLocalIPs } = await import('./utils/get-local-ip');
-  const { dbConnetMiddleware } = await import('./middleware/db-connect');
+  const mongoose = (await import('mongoose')).default;
+  const { dbConnetMiddleware, MONGODB_URI } = await import(
+    './middleware/db-connect'
+  );
   const app = await NestFactory.create(AppModule);
   const port = process.env.PORT ?? 3000;
+  if (mongoose.connection.readyState !== 1) {
+    await mongoose.connect(MONGODB_URI);
+  }
   app.use(dbConnetMiddleware);
   await app.listen(port);
   const ip = getLocalIPs();

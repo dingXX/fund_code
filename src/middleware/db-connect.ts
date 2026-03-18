@@ -41,7 +41,9 @@ export async function dbConnetMiddleware(
   res: Response,
   next: NextFunction,
 ) {
-  await mongoose.connect(MONGODB_URI);
+  if (mongoose.connection.readyState !== 1) {
+    await mongoose.connect(MONGODB_URI);
+  }
 
   await next(); // 调用 next() 将控制权传递给下一个中间件或路由处理程序
 }

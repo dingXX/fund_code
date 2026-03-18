@@ -18,6 +18,6 @@ export class AppService {
     // const list = req.headers;
     // console.log('list', list);
 
-    return 'aaa';
+    return process.env.NODE_ENV;
   }
 }

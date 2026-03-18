@@ -369,7 +369,6 @@ export default class FundService {
         $exists: false,
       },
     });
-    console.log('unBuyCountList', unBuyCountList);
     for await (const item of unBuyCountList) {
       await this.setHadBuy(item);
     }
